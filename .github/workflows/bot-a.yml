@@ -1,0 +1,23 @@
+name: Bot Run Midnight to 6AM
+
+on:
+  schedule:
+    - cron: '0 0 * * *'  # midnight UTC
+  workflow_dispatch:
+
+jobs:
+  run_bot:
+    runs-on: ubuntu-latest
+    timeout-minutes: 360  # 6 hours max runtime
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - run: npm install && npm update
+      - run: node bot.js
+        env:
+          DISCORD_TOKEN: ${{ secrets.DISCORD_TOKEN }}
+          MONGO_URI: ${{ secrets.MONGO_URI }}
+          SESSION_SECRET: ${{ secrets.SESSION_SECRET }}
